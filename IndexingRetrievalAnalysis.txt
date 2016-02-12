@@ -1,0 +1,77 @@
+Short Report describing the implementation of Indexing and Retrieval Assignment:
+========================================================================
+
+Implementation of the main method:
+==================================
+Algorithm:
+—————————
+
+Step 1: Read the input “tccorpus.txt” file which contains the document collection along with the data that the document contains.
+        Format of the document is as below:
+	 a. A # followed by a document ID.
+	 b. Lines below the document ID line contain stemmed words from the document.
+	 c. Each document ends with a list of numerical cross references.
+Step 2: Create a LinkedHashMap<String, ArrayList<DocInfo>> ind data structure to store the inverted index for each word.
+        The DocInfo is a new class which consist of docId and term_req as it’s data member.
+        Create a LinkedHashMap<Integer,Integer> dl to store the number of tokens for a particular document id. docId is key.
+        Call the indexer method on the “tccorpus.txt” file.
+Step 3: Load the index.out file into a similar data structure. The only difference is that we are reading directly from the 
+        inverted index file and loading it into a LinkedHashMap<K,V> inverted_index.
+Step 4: Call the calculate BM25 function on inverted_index , dl, “queries.txt”(input file), “result.eval” (output file) and 
+        the numOfDocs. (i.e. no of documents to display in the final result).
+Step 5: End Of Main.
+
+Implementation of the calculateBM25 method
+==========================================
+Algorithm:
+—————————
+
+Step 1: Read the input “queries.txt” file.
+Step 2: Initialize the constants used in the calculation of BM25 score
+        i.e. k1 = 1.2, k2 = 100 and b = 0.75
+Step 3: For each line read
+		create a LinkedHashMap<String, Double> qfreq to store the query term frequency.
+		call build_frequency_for_query to load the above hash map.
+		create a LinkedHashMap<Integer, Double> score_list to store the BM25 scores of
+		all the documents containing the query term.
+		split the line based on space
+		for each string 
+			get the ArrayList of all the documents dlist for the corresponding word.
+				for each document d in list
+					calculate the BM25 score using the given formula
+					store each result obtained in the HashMap i.e. if the docId is 
+					already present then add the new result to the previous value
+					else store the new value along with the document id.
+		write the final result to a file called “result.eval” i.e. write the contents of score_list 
+		data structure to the file in a sorted order using a comparator class.
+Step 4: Close the input and the output files after completion of read and write operations.		
+
+Implementation of the indexer method
+====================================
+Algorithm:
+—————————
+
+Step 1: Read the input “tccorpus.txt” file.
+Step 2: For each line read
+		if line starts with a “#”
+			split the line based on space and store the docID in variable.
+		else
+			split the line based on space and iterate over the strings
+				for each string
+					if word is not completely composed of numbers i.e get rid of all the numerical cross references.
+						if map already contains the word
+							check for multiple same words in the current document
+							in that case increment the term frequency else create
+							a new document and add it to a map with term_req as 1.
+						else
+							create a new document with id and term frequency as 1 
+							add it to the ArrayList of docs and put it in a map.
+						Update the count of words. i.e. noOfTokens for each docId.
+			write the LinkedHashMap data structure to a file called “index.out”
+			close all the files opened for read and write operations.
+
+======================================================================================================================
+
+			
+				 
+
